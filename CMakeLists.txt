@@ -34,8 +34,17 @@ if(${__HIP_ENABLE_PCH})
   add_definitions(-D__HIP_ENABLE_PCH)
 endif()
 
-list(APPEND CMAKE_PREFIX_PATH ${ROCM_PATH}/hip ${ROCM_PATH})
+if (NOT DEFINED HIP_PLATFORM or HIP_PLATFORM STREQUAL "amd")
+  list(APPEND CMAKE_PREFIX_PATH ${ROCM_PATH}/hip ${ROCM_PATH})
 
-find_package(HIP)
+  find_package(hip)
 
-hip_add_executable(bit_extract bit_extract.cpp)
+  set(CMAKE_CXX_COMPILER ${HIP_HIPCC_EXECUTABLE})
+  set(CMAKE_CXX_LINKER   ${HIP_HIPCC_EXECUTABLE})
+
+  add_executable(bit_extract bit_extract.cpp)
+
+  target_link_libraries(bit_extract hip::host)
+else if (HIP_PLATFORM STREQUAL "nvidia" or HIP_PLATFORM STREQUAL "nvcc")
+  message(FATAL_ERROR "TODO")
+endif()
