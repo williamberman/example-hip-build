@@ -50,7 +50,11 @@ elseif (HIP_PLATFORM STREQUAL "nvidia" OR HIP_PLATFORM STREQUAL "nvcc")
   cmake_path(APPEND _nvidia_hipcc "${CMAKE_CURRENT_BINARY_DIR}" nvidia_hipcc)
   message("writing to ${_nvidia_hipcc}")
   file(WRITE ${_nvidia_hipcc} "${CMAKE_COMMAND} -E env HIP_PLATFORM=${HIP_PLATFORM} ${HIP_HIPCC_EXECUTABLE}\n")
-  file(CHMOD ${nvidia_hipcc} PERMISSIONS WORLD_EXECUTE)
+  file(CHMOD ${nvidia_hipcc} 
+    PERMISSIONS 
+      OWNER_READ OWNER_WRITE OWNER_EXECUTE 
+      GROUP_READ GROUP_EXECUTE 
+      WORLD_READ WORLD_EXECUTE)
   set(CMAKE_CXX_COMPILER ${_nvidia_hipcc})
   set(CMAKE_CXX_LINKER   ${_nvidia_hipcc})
 
