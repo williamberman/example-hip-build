@@ -46,7 +46,7 @@ set(CMAKE_CXX_LINKER   ${HIP_HIPCC_EXECUTABLE})
 if (NOT DEFINED HIP_PLATFORM OR HIP_PLATFORM STREQUAL "amd")
   target_link_libraries(bit_extract hip::device)
 elseif (HIP_PLATFORM STREQUAL "nvidia" OR HIP_PLATFORM STREQUAL "nvcc")
-  add_library(hip:device_nvidia INTERFACE)
+  add_library(hip::device_nvidia INTERFACE)
 
   target_include_directories(hip::device_nvidia SYSTEM INTERFACE ${HIP_INCLUDE_DIRS} ${ROCM_PATH}/include)
   target_include_directories(hip::device_nvidia INTERFACE ${HIP_INCLUDE_DIRS} ${ROCM_PATH}/include)
