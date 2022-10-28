@@ -40,18 +40,22 @@ list(APPEND CMAKE_PREFIX_PATH ${ROCM_PATH}/hip ${ROCM_PATH})
 
 find_package(hip)
 
-set(CMAKE_CXX_COMPILER ${HIP_HIPCC_EXECUTABLE})
-set(CMAKE_CXX_LINKER   ${HIP_HIPCC_EXECUTABLE})
 
 if (NOT DEFINED HIP_PLATFORM OR HIP_PLATFORM STREQUAL "amd")
+  set(CMAKE_CXX_COMPILER ${HIP_HIPCC_EXECUTABLE})
+  set(CMAKE_CXX_LINKER   ${HIP_HIPCC_EXECUTABLE})
+
   target_link_libraries(bit_extract hip::device)
 elseif (HIP_PLATFORM STREQUAL "nvidia" OR HIP_PLATFORM STREQUAL "nvcc")
+  set(CMAKE_CXX_COMPILER "HIP_PLATFORM=${HIP_PLATFORM} ${HIP_HIPCC_EXECUTABLE}")
+  set(CMAKE_CXX_LINKER   "HIP_PLATFORM=${HIP_PLATFORM} ${HIP_HIPCC_EXECUTABLE}")
+
   add_library(hip_device_nvidia INTERFACE)
 
   target_include_directories(hip_device_nvidia SYSTEM INTERFACE ${HIP_INCLUDE_DIRS} ${ROCM_PATH}/include)
   target_include_directories(hip_device_nvidia INTERFACE ${HIP_INCLUDE_DIRS} ${ROCM_PATH}/include)
 
-  target_compile_definitions(hip_device_nvidia INTERFACE __HIP_PLATFORM_NVIDIA__=1)
+  # target_compile_definitions(hip_device_nvidia INTERFACE __HIP_PLATFORM_NVIDIA__=1)
 
   # include /opt/rocm-5.3.0/hip/include;/opt/rocm/include
   # how to set HIP_PLATFORM="nvidia" env var when calling compiler?
