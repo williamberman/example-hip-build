@@ -34,20 +34,25 @@ if(${__HIP_ENABLE_PCH})
   add_definitions(-D__HIP_ENABLE_PCH)
 endif()
 
+add_executable(bit_extract bit_extract.cpp)
+
+list(APPEND CMAKE_PREFIX_PATH ${ROCM_PATH}/hip ${ROCM_PATH})
+
+find_package(hip)
+
+set(CMAKE_CXX_COMPILER ${HIP_HIPCC_EXECUTABLE})
+set(CMAKE_CXX_LINKER   ${HIP_HIPCC_EXECUTABLE})
+
 if (NOT DEFINED HIP_PLATFORM OR HIP_PLATFORM STREQUAL "amd")
-  list(APPEND CMAKE_PREFIX_PATH ${ROCM_PATH}/hip ${ROCM_PATH})
-
-  find_package(hip)
-
-  set(CMAKE_CXX_COMPILER ${HIP_HIPCC_EXECUTABLE})
-  set(CMAKE_CXX_LINKER   ${HIP_HIPCC_EXECUTABLE})
-
-  add_executable(bit_extract bit_extract.cpp)
-
-  # target_link_libraries(bit_extract hip::device)
-  # target_link_libraries(bit_extract hip::host)
+  target_link_libraries(bit_extract hip::device)
 elseif (HIP_PLATFORM STREQUAL "nvidia" OR HIP_PLATFORM STREQUAL "nvcc")
-  message(FATAL_ERROR "TODO")
+  add_library(hip:device_nvidia INTERFACE)
+
+  # include /opt/rocm-5.3.0/hip/include;/opt/rocm/include
+  # link cuda?
+  # device to build for?
+
+  target_link_libraries(bit_extract hip::device_nvidia)
 endif()
 
 execute_process(COMMAND cmake --help-property-list OUTPUT_VARIABLE CMAKE_PROPERTY_LIST)
@@ -72,6 +77,9 @@ function(print_target_properties tgt)
     endforeach(prop)
 endfunction(print_target_properties)
 
-print_target_properties(hip::device)
-print_target_properties(hip::host)
-print_target_properties(hip::amdhip64)
+# print_target_properties(hip::device)
+# print_target_properties(hip::host)
+# print_target_properties(hip::amdhip64)
+
+message(NOTICE $ROCM_PATH)
+message(NOTICE $HIP_INCLUDE_DIRS)
