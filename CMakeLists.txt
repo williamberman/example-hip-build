@@ -20,6 +20,8 @@
 
 project(bit_extract)
 
+include(CMakePrintHelpers)
+
 cmake_minimum_required(VERSION 3.10)
 
 if(NOT WIN32 AND NOT DEFINED __HIP_ENABLE_PCH)
