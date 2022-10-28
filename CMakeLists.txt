@@ -62,42 +62,8 @@ elseif (HIP_PLATFORM STREQUAL "nvidia" OR HIP_PLATFORM STREQUAL "nvcc")
   target_include_directories(hip_device_nvidia SYSTEM INTERFACE ${HIP_INCLUDE_DIRS} ${ROCM_PATH}/include)
   target_include_directories(hip_device_nvidia INTERFACE ${HIP_INCLUDE_DIRS} ${ROCM_PATH}/include)
 
-  # target_compile_definitions(hip_device_nvidia INTERFACE __HIP_PLATFORM_NVIDIA__=1)
-
-  # include /opt/rocm-5.3.0/hip/include;/opt/rocm/include
-  # how to set HIP_PLATFORM="nvidia" env var when calling compiler?
-  # link cuda?
-  # device to build for?
+  # TODO link cuda?
+  # TODO device to build for?
 
   target_link_libraries(bit_extract hip_device_nvidia)
 endif()
-
-execute_process(COMMAND cmake --help-property-list OUTPUT_VARIABLE CMAKE_PROPERTY_LIST)
-
-STRING(REGEX REPLACE ";" "\\\\;" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
-STRING(REGEX REPLACE "\n" ";" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
-
-list(REMOVE_DUPLICATES CMAKE_PROPERTY_LIST)
-
-function(print_target_properties tgt)
-    if(NOT TARGET ${tgt})
-            message(NOTICE "There is no target named '${tgt}'")
-      return()
-    endif()
-
-    foreach (prop ${CMAKE_PROPERTY_LIST})
-        string(REPLACE "<CONFIG>" "${CMAKE_BUILD_TYPE}" prop ${prop})
-        get_target_property(propval ${tgt} ${prop})
-        if (propval)
-                message (NOTICE "${tgt} ${prop} = ${propval}")
-        endif()
-    endforeach(prop)
-endfunction(print_target_properties)
-
-# print_target_properties(hip::device)
-# print_target_properties(hip::host)
-# print_target_properties(hip::amdhip64)
-print_target_properties(hip_device_nvidia)
-
-# message(NOTICE ${ROCM_PATH})
-# message(NOTICE ${HIP_INCLUDE_DIRS})
