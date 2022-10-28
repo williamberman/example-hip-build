@@ -40,13 +40,16 @@ list(APPEND CMAKE_PREFIX_PATH ${ROCM_PATH}/hip ${ROCM_PATH})
 
 find_package(hip)
 
-
 if (NOT DEFINED HIP_PLATFORM OR HIP_PLATFORM STREQUAL "amd")
   set(CMAKE_CXX_COMPILER ${HIP_HIPCC_EXECUTABLE})
   set(CMAKE_CXX_LINKER   ${HIP_HIPCC_EXECUTABLE})
 
   target_link_libraries(bit_extract hip::device)
 elseif (HIP_PLATFORM STREQUAL "nvidia" OR HIP_PLATFORM STREQUAL "nvcc")
+  # NOTE: we do not explicitly link cuda.
+  # hipcc when targeting nvidia will use nvcc under the hood. 
+  # nvcc when used for linking will handle linking cuda dependencies
+
   cmake_path(APPEND _nvidia_hipcc "${CMAKE_CURRENT_BINARY_DIR}" nvidia_hipcc)
   file(WRITE ${_nvidia_hipcc} "${CMAKE_COMMAND} -E env HIP_PLATFORM=${HIP_PLATFORM} ${HIP_HIPCC_EXECUTABLE} $@\n")
   file(CHMOD ${_nvidia_hipcc} 
@@ -54,16 +57,18 @@ elseif (HIP_PLATFORM STREQUAL "nvidia" OR HIP_PLATFORM STREQUAL "nvcc")
       OWNER_READ OWNER_WRITE OWNER_EXECUTE 
       GROUP_READ GROUP_EXECUTE 
       WORLD_READ WORLD_EXECUTE)
+
   set(CMAKE_CXX_COMPILER ${_nvidia_hipcc})
   set(CMAKE_CXX_LINKER   ${_nvidia_hipcc})
 
   add_library(hip_device_nvidia INTERFACE)
 
+  if (DEFINED CUDA_ARCH)
+    target_compile_options(hip_device_nvidia -arch=compute_${CUDA_ARCH})
+  endif()
+
   target_include_directories(hip_device_nvidia SYSTEM INTERFACE ${HIP_INCLUDE_DIRS} ${ROCM_PATH}/include)
   target_include_directories(hip_device_nvidia INTERFACE ${HIP_INCLUDE_DIRS} ${ROCM_PATH}/include)
-
-  # TODO link cuda?
-  # TODO device to build for?
 
   target_link_libraries(bit_extract hip_device_nvidia)
 endif()
