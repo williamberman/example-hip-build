@@ -64,7 +64,7 @@ elseif (HIP_PLATFORM STREQUAL "nvidia" OR HIP_PLATFORM STREQUAL "nvcc")
   add_library(hip_device_nvidia INTERFACE)
 
   if (DEFINED CUDA_ARCH)
-    target_compile_options(hip_device_nvidia -arch=compute_${CUDA_ARCH})
+    target_compile_options(hip_device_nvidia INTERFACE -arch=compute_${CUDA_ARCH})
   endif()
 
   target_include_directories(hip_device_nvidia SYSTEM INTERFACE ${HIP_INCLUDE_DIRS} ${ROCM_PATH}/include)
