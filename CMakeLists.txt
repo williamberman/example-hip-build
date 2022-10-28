@@ -51,6 +51,8 @@ elseif (HIP_PLATFORM STREQUAL "nvidia" OR HIP_PLATFORM STREQUAL "nvcc")
   target_include_directories(hip_device_nvidia SYSTEM INTERFACE ${HIP_INCLUDE_DIRS} ${ROCM_PATH}/include)
   target_include_directories(hip_device_nvidia INTERFACE ${HIP_INCLUDE_DIRS} ${ROCM_PATH}/include)
 
+  target_compile_definitions(hip_device_nvidia INTERFACE __HIP_PLATFORM_NVIDIA__=1)
+
   # include /opt/rocm-5.3.0/hip/include;/opt/rocm/include
   # how to set HIP_PLATFORM="nvidia" env var when calling compiler?
   # link cuda?
@@ -86,5 +88,5 @@ endfunction(print_target_properties)
 # print_target_properties(hip::amdhip64)
 print_target_properties(hip_device_nvidia)
 
-message(NOTICE ${ROCM_PATH})
-message(NOTICE ${HIP_INCLUDE_DIRS})
+# message(NOTICE ${ROCM_PATH})
+# message(NOTICE ${HIP_INCLUDE_DIRS})
