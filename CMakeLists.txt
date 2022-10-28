@@ -44,7 +44,10 @@ if (NOT DEFINED HIP_PLATFORM OR HIP_PLATFORM STREQUAL "amd")
 
   add_executable(bit_extract bit_extract.cpp)
 
-  target_link_libraries(bit_extract hip::host)
+  # target_link_libraries(bit_extract hip::device)
+  # target_link_libraries(bit_extract hip::host)
 elseif (HIP_PLATFORM STREQUAL "nvidia" OR HIP_PLATFORM STREQUAL "nvcc")
   message(FATAL_ERROR "TODO")
 endif()
+
+cmake_print_properties(TARGETS hip::device hip::device hip::amdhip64)
