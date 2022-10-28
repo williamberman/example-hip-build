@@ -48,8 +48,7 @@ if (NOT DEFINED HIP_PLATFORM OR HIP_PLATFORM STREQUAL "amd")
   target_link_libraries(bit_extract hip::device)
 elseif (HIP_PLATFORM STREQUAL "nvidia" OR HIP_PLATFORM STREQUAL "nvcc")
   cmake_path(APPEND _nvidia_hipcc "${CMAKE_CURRENT_BINARY_DIR}" nvidia_hipcc)
-  message("writing to ${_nvidia_hipcc}")
-  file(WRITE ${_nvidia_hipcc} "${CMAKE_COMMAND} -E env HIP_PLATFORM=${HIP_PLATFORM} ${HIP_HIPCC_EXECUTABLE}\n")
+  file(WRITE ${_nvidia_hipcc} "${CMAKE_COMMAND} -E env HIP_PLATFORM=${HIP_PLATFORM} ${HIP_HIPCC_EXECUTABLE} $@\n")
   file(CHMOD ${_nvidia_hipcc} 
     PERMISSIONS 
       OWNER_READ OWNER_WRITE OWNER_EXECUTE 
