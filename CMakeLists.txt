@@ -20,8 +20,6 @@
 
 project(bit_extract)
 
-include(CMakePrintHelpers)
-
 cmake_minimum_required(VERSION 3.10)
 
 if(NOT WIN32 AND NOT DEFINED __HIP_ENABLE_PCH)
@@ -52,4 +50,28 @@ elseif (HIP_PLATFORM STREQUAL "nvidia" OR HIP_PLATFORM STREQUAL "nvcc")
   message(FATAL_ERROR "TODO")
 endif()
 
-cmake_print_properties(TARGETS hip::device hip::device hip::amdhip64)
+execute_process(COMMAND cmake --help-property-list OUTPUT_VARIABLE CMAKE_PROPERTY_LIST)
+
+STRING(REGEX REPLACE ";" "\\\\;" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
+STRING(REGEX REPLACE "\n" ";" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
+
+list(REMOVE_DUPLICATES CMAKE_PROPERTY_LIST)
+
+function(print_target_properties tgt)
+    if(NOT TARGET ${tgt})
+            message(NOTICE "There is no target named '${tgt}'")
+      return()
+    endif()
+
+    foreach (prop ${CMAKE_PROPERTY_LIST})
+        string(REPLACE "<CONFIG>" "${CMAKE_BUILD_TYPE}" prop ${prop})
+        get_target_property(propval ${tgt} ${prop})
+        if (propval)
+                message (NOTICE "${tgt} ${prop} = ${propval}")
+        endif()
+    endforeach(prop)
+endfunction(print_target_properties)
+
+print_target_properties(hip::device)
+print_target_properties(hip::host)
+print_target_properties(hip::amdhip64)
