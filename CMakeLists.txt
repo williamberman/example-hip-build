@@ -84,6 +84,7 @@ endfunction(print_target_properties)
 # print_target_properties(hip::device)
 # print_target_properties(hip::host)
 # print_target_properties(hip::amdhip64)
+print_target_properties(hip::device_nvidia)
 
 message(NOTICE ${ROCM_PATH})
 message(NOTICE ${HIP_INCLUDE_DIRS})
