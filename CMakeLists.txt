@@ -47,9 +47,10 @@ if (NOT DEFINED HIP_PLATFORM OR HIP_PLATFORM STREQUAL "amd")
 
   target_link_libraries(bit_extract hip::device)
 elseif (HIP_PLATFORM STREQUAL "nvidia" OR HIP_PLATFORM STREQUAL "nvcc")
-  file(WRITE nvidia_hipcc "${CMAKE_COMMAND} -E env HIP_PLATFORM=${HIP_PLATFORM} ${HIP_HIPCC_EXECUTABLE}\n")
-  set(CMAKE_CXX_COMPILER nvidia_hipcc)
-  set(CMAKE_CXX_LINKER   nvidia_hipcc)
+  cmake_path(APPEND _nvidia_hipcc "${CMAKE_CURRENT_SOURCE_DIR}" "data")
+  file(WRITE ${_nvidia_hipcc} "${CMAKE_COMMAND} -E env HIP_PLATFORM=${HIP_PLATFORM} ${HIP_HIPCC_EXECUTABLE}\n")
+  set(CMAKE_CXX_COMPILER ${_nvidia_hipcc})
+  set(CMAKE_CXX_LINKER   ${_nvidia_hipcc})
 
   add_library(hip_device_nvidia INTERFACE)
 
