@@ -3,8 +3,9 @@
 Example of building HIP targeting nvidia and rocm. Modified from [HIP examples](https://github.com/ROCm-Developer-Tools/HIP/tree/d62eaeeda560c0c33d1e58fe9e44d7fd28220ac1/samples/0_Intro/bit_extract) to build for both amd and nvidia.
 
 #### Cmake variables
+
 | variable name | default value | description |
-|-----------|----------------------------------------------------|
+|-----------|-----------|-----------------------------------------|
 | ROCM_PATH | /opt/rocm | Default ROCM installation directory. |
 | HIP_PLATFORM | amd | Platform for HIP to target. Available values: amd, nvidia, or nvcc (deprecated -- equivalent to nvidia). |
 | CUDA_ARCH |  | Optional: If targeting CUDA, specific architecture to target. Standard `compute_XX` form. |
