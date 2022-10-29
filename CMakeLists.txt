@@ -55,7 +55,6 @@ if (HIP_PLATFORM STREQUAL "amd")
   # You do not directly link to hip::amdhip64. hip::host links to hip::amdhip64
   # and hip::device links to hip::host. Link to hip::host to just use hip without 
   # compiling any GPU code. Link to hip::device to compile the GPU device code.
-  # `hip::device` and `hip::
   #
   # Docs (outdated):
   # https://rocmdocs.amd.com/en/latest/Installation_Guide/Using-CMake-with-AMD-ROCm.html
