@@ -22,9 +22,11 @@ project(bit_extract)
 
 cmake_minimum_required(VERSION 3.10)
 
-if (NOT DEFINED ROCM_PATH )
-  set( ROCM_PATH "/opt/rocm" CACHE STRING "Default ROCM installation directory.")
-endif()
+set( ROCM_PATH "/opt/rocm" CACHE STRING "Default ROCM installation directory.")
+
+set(HIP_PLATFORM "amd" CACHE STRING "Platform for HIP to target. Available values: amd, nvidia, or nvcc (deprecated -- equivalent to nvidia).")
+
+set(CUDA_ARCH "" CACHE STRING "Optional: If targeting CUDA, specific architecture to target. Standard `compute_XX` form.")
 
 add_executable(bit_extract bit_extract.cpp)
 
@@ -32,7 +34,7 @@ list(APPEND CMAKE_PREFIX_PATH ${ROCM_PATH}/hip ${ROCM_PATH})
 
 find_package(hip)
 
-if (NOT DEFINED HIP_PLATFORM OR HIP_PLATFORM STREQUAL "amd")
+if (HIP_PLATFORM STREQUAL "amd")
   if(NOT WIN32 AND NOT DEFINED __HIP_ENABLE_PCH)
     set(__HIP_ENABLE_PCH ON CACHE BOOL "enable/disable pre-compiled hip headers")
   endif()
@@ -90,8 +92,8 @@ elseif (HIP_PLATFORM STREQUAL "nvidia" OR HIP_PLATFORM STREQUAL "nvcc")
   # linking cuda dependencies
   set(CMAKE_CXX_LINKER   ${_nvidia_hipcc})
 
-  if (DEFINED CUDA_ARCH)
-    target_compile_options(hip_device_nvidia INTERFACE -arch=compute_${CUDA_ARCH})
+  if (NOT CUDA_ARCH STREQUAL "")
+    target_compile_options(hip_device_nvidia INTERFACE -arch=${CUDA_ARCH})
   endif()
 
   target_include_directories(hip_device_nvidia SYSTEM INTERFACE ${HIP_INCLUDE_DIRS} ${ROCM_PATH}/include)
