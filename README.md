@@ -11,6 +11,8 @@ Example of building HIP targeting nvidia and rocm. Modified from [HIP examples](
 | CUDA_ARCH |  | Optional: If targeting CUDA, specific architecture to target. Standard `compute_XX` form. |
 
 ###### Building AMD
+This builds on amd and nvidia machines but the resulting binary hasn't been ran on an amd machine that supports rocm.
+
 ```sh
 $ mkdir build-amd
 $ cd build-amd
