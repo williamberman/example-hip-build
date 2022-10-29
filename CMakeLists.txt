@@ -22,17 +22,9 @@ project(bit_extract)
 
 cmake_minimum_required(VERSION 3.10)
 
-if(NOT WIN32 AND NOT DEFINED __HIP_ENABLE_PCH)
-  set(__HIP_ENABLE_PCH ON CACHE BOOL "enable/disable pre-compiled hip headers")
-endif()
-
 if (NOT DEFINED ROCM_PATH )
      set ( ROCM_PATH "/opt/rocm"  CACHE STRING "Default ROCM installation directory." )
 endif ()
-
-if(${__HIP_ENABLE_PCH})
-  add_definitions(-D__HIP_ENABLE_PCH)
-endif()
 
 add_executable(bit_extract bit_extract.cpp)
 
@@ -41,6 +33,14 @@ list(APPEND CMAKE_PREFIX_PATH ${ROCM_PATH}/hip ${ROCM_PATH})
 find_package(hip)
 
 if (NOT DEFINED HIP_PLATFORM OR HIP_PLATFORM STREQUAL "amd")
+  if(NOT WIN32 AND NOT DEFINED __HIP_ENABLE_PCH)
+    set(__HIP_ENABLE_PCH ON CACHE BOOL "enable/disable pre-compiled hip headers")
+  endif()
+  
+  if(${__HIP_ENABLE_PCH})
+    add_definitions(-D__HIP_ENABLE_PCH)
+  endif()
+
   set(CMAKE_CXX_COMPILER ${HIP_HIPCC_EXECUTABLE})
   set(CMAKE_CXX_LINKER   ${HIP_HIPCC_EXECUTABLE})
 
