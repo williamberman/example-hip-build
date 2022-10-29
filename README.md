@@ -10,6 +10,49 @@ Example of building HIP targeting nvidia and rocm. Modified from [HIP examples](
 | HIP_PLATFORM | amd | Platform for HIP to target. Available values: amd, nvidia, or nvcc (deprecated -- equivalent to nvidia). |
 | CUDA_ARCH |  | Optional: If targeting CUDA, specific architecture to target. Standard `compute_XX` form. |
 
+###### Building AMD
+```sh
+$ mkdir build-amd
+$ cd build-amd
+$ cmake -DHIP_PLATFORM=amd ..
+$ make
+$ ./bit_extract
+```
+
+###### Building NVIDIA
+```sh
+$ mkdir build-nvidia
+$ cd build-nvidia
+$ cmake -DHIP_PLATFORM=nvidia ..
+$ make
+$ ./bit_extract
+info: running on device #0 Tesla T4
+info: allocate host mem (  7.63 MB)
+info: allocate device mem (  7.63 MB)
+info: copy Host2Device
+info: launch 'bit_extract_kernel' 
+info: copy Device2Host
+info: check result
+PASSED!
+```
+
+###### Building NVIDIA Custom Arch
+```sh
+$ mkdir build-nvidia-custom-arch
+$ cd build-nvidia-custom-arch
+$ cmake -DHIP_PLATFORM=nvidia -DCUDA_ARCH=compute_75 ..
+$ make
+$ ./bit_extract
+info: running on device #0 Tesla T4
+info: allocate host mem (  7.63 MB)
+info: allocate device mem (  7.63 MB)
+info: copy Host2Device
+info: launch 'bit_extract_kernel' 
+info: copy Device2Host
+info: check result
+PASSED!
+```
+
 #### Notes
 
 The rocm install comes with a cmake config file for hip, but it only works when targeting amd. The HIP source has cmake
